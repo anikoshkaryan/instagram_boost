@@ -1,0 +1,44 @@
+#app { height: 100% }
+/*html,*/
+/*body {*/
+/*    position: relative;*/
+/*    height: 100%;*/
+/*}*/
+
+/*body {*/
+/*    background: #eee;*/
+/*    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;*/
+/*    font-size: 14px;*/
+/*    color: #000;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*}*/
+
+.swiper {
+    width: 100%;
+    /*padding-top: 50px;*/
+    padding-bottom: 180px;
+}
+
+.swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 300px;
+    height: 300px;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+}
+
+
+.swiper-pagination-bullet {
+    background: linear-gradient(98.24deg, #6DDCFF 30%, #7F60F9 100%);
+    width: 10px!important;
+    height: 10px!important;
+}
+
+.swiper-pagination-bullet-active {
+    background: linear-gradient(98.24deg, #6DDCFF 0%, #7F60F9 100%) !important;
+}
