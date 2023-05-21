@@ -674,4 +674,10 @@
     margin-bottom: 11px;
 }
 
+.error_text {
+    font-size: 15px;
+    color: red;
+    font-weight: 500;
+    margin-top: 10px;
+}
 /*login popup end*/

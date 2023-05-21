@@ -10,6 +10,7 @@ import logo from '../../../assets/svg/logo.18181ee4c4a79bf8b9f8df8a05370876.svg'
 import hamburger_icon from '../../../assets/svg/hamburger_icon.9b492ca763ce405966b578ca958685f1.svg'
 import close_icon from '../../../assets/svg/close.1dde956c7d01ed3104ed86048bc3618b.svg'
 import Profile from "./../Profile";
+// import browserHistory from "react-router";
 
 
 const API_URL = 'https://kinect.tw1.ru/api/';
@@ -126,8 +127,6 @@ export default class Home extends React.Component {
         })
     }
 
-
-
     // register = async () => {
     //
     //
@@ -155,11 +154,10 @@ export default class Home extends React.Component {
     //
     // }
 
-
+    //
     //  register = async () => {
     //
-    //      let {email, login, instagram, password} = this.state;
-    //      let form = new FormData();
+         // let form = new FormData();
     //
     //      form.append("email", email);
     //      form.append("username", login);
@@ -189,32 +187,258 @@ export default class Home extends React.Component {
     //
     //
     //
-    //      // try {
-    //      //        fetch(`http://wannahype.com:8080/api/user`, {
-    //      //            method: 'POST',
-    //      //            headers: {
-    //      //                'Accept': 'application/json',
-    //      //                'Content-Type': 'application/json',
-    //      //            },
-    //      //            body: JSON.stringify({
-    //      //                email: email,
-    //      //                password: password,
-    //      //                instagram: instagram,
-    //      //                username: login,
-    //      //            })
-    //      //
-    //      //        }).then((response) => {
-    //      //            return response.json()
-    //      //        }).then((response) => {
-    //      //
-    //      //
-    //      //            console.log(response, 'register')
-    //      //
-    //      //        })
-    //      //    } catch (e) {
-    //      //        console.log(e)
-    //      //    }
+    //       try {
+    //              fetch(`http://wannahype.com:8080/api/user`, {
+    //                  method: 'POST',
+    //                  headers: {
+    //                      'Accept': 'application/json',
+    //                      'Content-Type': 'application/json',
+    //                  },
+    //                 body: JSON.stringify({
+    //                      email: email,
+    //                     password: password,
+    //                      instagram: instagram,
+    //                      username: login,
+    //                  })
+    //
+    //              }).then((response) => {
+    //                  return response.json()
+    //              }).then((response) => {
+    //
+    //
+    //                console.log(response, 'register')
+    //
+    //             })
+    //      } catch (e) {
+    //              console.log(e)
+    //          }
     // }
+
+     validateEmail = (email) => {
+        // Regular expression for email validation
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+        return emailRegex.test(email);
+    };
+
+
+    register = async  () => {
+
+        let myHeaders = new Headers();
+        let {email, login, instagram, password} = this.state;
+        myHeaders.append("Content-Type", "application/json");
+        const isValidEmail = this.validateEmail(email);
+
+
+        if (email.length == 0  || isValidEmail === false || login.length == 0 || instagram.length == 0 || password.length == 0 || password.length > 0 && password.length < 6) {
+            if (email.length == 0) {
+                    this.setState({
+                        email_error: true,
+                        email_error_text: 'The field is required'
+                    })
+                }  else if (isValidEmail === false) {
+                    this.setState({
+                        email_error: true,
+                        email_error_text: 'The email is not valid'
+                    })
+            }  else  {
+                this.setState({
+                    email_error: false,
+                    email_error_text: ''
+                })
+            }
+
+
+
+
+
+            if (login.length == 0) {
+                this.setState({
+                    login_error: true,
+                    login_error_text: 'The field is required'
+                })
+            } else {
+                this.setState({
+                    login_error: false,
+                    login_error_text: ''
+                })
+            }
+
+            if (instagram.length == 0) {
+                this.setState({
+                    instagram_error: true,
+                    instagram_error_text: 'The field is required'
+                })
+            } else {
+                this.setState({
+                    instagram_error: false,
+                    instagram_error_text: ''
+                })
+            }
+
+            if (password.length == 0) {
+                this.setState({
+                    password_error: true,
+                    password_error_text: 'The field is required'
+                })
+            } else if (password.length > 0 && password.length < 6) {
+                this.setState({
+                    password_error: true,
+                    password_error_text: 'The password must be at least 6 characters'
+                })
+            } else {
+                this.setState({
+                    password_error: false,
+                    password_error_text: ''
+                })
+            }
+
+        } else {
+            this.setState({
+                password_error: false,
+                password_error_text: '',
+                email_error: false,
+                email_error_text: '',
+                instagram_error: false,
+                instagram_error_text: '',
+                login_error: false,
+                login_error_text: '',
+            })
+            let raw = JSON.stringify({
+                email: email,
+                username: login,
+                instagram: instagram,
+                password: password,
+            });
+
+            let requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            let response = await fetch("http://wannahype.com:8080/api/user", requestOptions);
+            console.log(response, 'rgggggg')
+            console.log(response.status, 'statussss')
+            if (response.status == 403) {
+                this.setState({
+                  login_error: true,
+                  login_error_text: 'This username isn\'t available'
+                })
+            } else {
+                this.setState({
+                    login_error: false,
+                    login_error_text: ''
+                })
+            }
+
+            if (response.status == 200) {
+                this.setState({
+                    show_login_popup: false,
+
+                })
+                window.location = '/profile'
+
+
+            }
+
+        }
+
+
+    }
+    login = async  () => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Cookie", "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbnVsaWs3MCIsImlhdCI6MTY4NDY4MzYyNCwiZXhwIjoxNjg0Njg0ODI0fQ.BH9C-oIJ9yH4pVyy4lk8oYHYvyZ5Ed-iy1HYNzo9hlU");
+        let {login, password} = this.state;
+
+        if (login.length == 0 || password.length == 0 || password.length > 0 && password.length < 6) {
+
+            if (login.length == 0) {
+                this.setState({
+                    login_error: true,
+                    login_error_text: 'The field is required'
+                })
+            } else {
+                this.setState({
+                    login_error: false,
+                    login_error_text: ''
+                })
+            }
+
+
+            if (password.length == 0) {
+                this.setState({
+                    password_error: true,
+                    password_error_text: 'The field is required'
+                })
+            } else if (password.length > 0 && password.length < 6) {
+                this.setState({
+                    password_error: true,
+                    password_error_text: 'The password must be at least 6 characters'
+                })
+            } else {
+                this.setState({
+                    password_error: false,
+                    password_error_text: ''
+                })
+            }
+        } else {
+            this.setState({
+                password_error: false,
+                password_error_text: '',
+                login_error: false,
+                login_error_text: ''
+            })
+
+            let raw = JSON.stringify({
+                username: login,
+                password: password,
+            });
+
+
+            let requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            let response = await fetch("http://wannahype.com:8080/api/authenticate", requestOptions);
+            console.log(response, 'rgggggg')
+            console.log(response.status, 'statussss')
+
+            if (response.status == 401) {
+                this.setState({
+                    login_error: true,
+                    login_error_text: 'This username isn\'t exist'
+                })
+            } else {
+                this.setState({
+                    login_error: false,
+                    login_error_text: ''
+                })
+                if (response.status == 200) {
+                    this.setState({
+                        show_login_popup: false,
+                    })
+
+                    this.props.enableBodyScroll()
+                    window.location = '/profile'
+
+
+                }
+            }
+
+
+        }
+
+
+
+
+        }
+
 
 
 
@@ -379,13 +603,25 @@ export default class Home extends React.Component {
                                 <img src={close_icon}/>
                             </button>
                             <div className="login_popup_input_field_title_wrapper">
-                                <p className='login_popup_input_title'>Email address</p>
-                                <input type="email" name="email" className='login_popup_input_field' />
+                                <p className='login_popup_input_title'>Login</p>
+                                <input type="text" name="login" value={this.state.login}
+                                       onChange={(e) => this.setState({
+                                           login: e.target.value
+                                       })}
 
+                                       className='login_popup_input_field' />
+                                {this.state.login_error &&
+                                <p className='error_text'>{this.state.login_error_text}</p>
+                                }
                             </div>
                             <div className="login_popup_input_field_title_wrapper">
                                 <p className='login_popup_input_title'>Password</p>
-                                <input type="password" name="password" className='login_popup_input_field' />
+                                <input type="password" name="password" value={this.state.password}  onChange={(e) => this.setState({
+                                    password: e.target.value
+                                })} className='login_popup_input_field' />
+                                {this.state.password_error &&
+                                <p className='error_text'>{this.state.password_error_text}</p>
+                                }
 
                             </div>
                             <div className='checkbox_forget_password_btns_wrapper'>
@@ -405,7 +641,7 @@ export default class Home extends React.Component {
                             </div>
                             <div className='login_sign_up_btns_wrapper'>
 
-                                <Link to={'./../Profile'} className='login_popup_btn' onClick={() =>  this.props.enableBodyScroll()}>Login</Link>
+                                <button  className='login_popup_btn' onClick={() =>  this.login()}>Login</button>
                                 <button className='sign_up_popup_btn' onClick={() => {
                                     this.setState({
                                         show_login_popup: false,
@@ -441,6 +677,9 @@ export default class Home extends React.Component {
                                        })}
 
                                        className='login_popup_input_field' />
+                                {this.state.login_error &&
+                                    <p className='error_text'>{this.state.login_error_text}</p>
+                                }
                             </div>
                             <div className="login_popup_input_field_title_wrapper">
                                 <p className='login_popup_input_title'>Email</p>
@@ -448,6 +687,9 @@ export default class Home extends React.Component {
                                     email: e.target.value
                                 })} className='login_popup_input_field' />
 
+                                {this.state.email_error &&
+                                     <p className='error_text'>{this.state.email_error_text}</p>
+                                }
                             </div>
                             <div className="login_popup_input_field_title_wrapper">
                                 <div className='login_popup_input_field_title_checkbox_wrapper'>
@@ -469,6 +711,9 @@ export default class Home extends React.Component {
                                 <input type="email" name="instagram" value={this.state.instagram}   onChange={(e) => this.setState({
                                     instagram: e.target.value
                                 })} className='login_popup_input_field' />
+                                {this.state.instagram_error &&
+                                     <p className='error_text'>{this.state.instagram_error_text}</p>
+                                }
 
                             </div>
                             <div className="login_popup_input_field_title_wrapper">
@@ -476,9 +721,12 @@ export default class Home extends React.Component {
                                 <input type="password" name="password" value={this.state.password}  onChange={(e) => this.setState({
                                     password: e.target.value
                                 })} className='login_popup_input_field' />
+                                {this.state.password_error &&
+                                    <p className='error_text'>{this.state.password_error_text}</p>
+                                }
 
                             </div>
-                            <button className='main_sign_up_popup_btn'>Sign Up</button>
+                            <button className='main_sign_up_popup_btn' onClick={() => this.register()}>Sign Up</button>
                         </div>
                     </div>
                     }
